@@ -8,14 +8,9 @@
 
 import UIKit
 
-enum NewsListLayoutOption {
-    case list
-    case grid
-}
-
 final class NewsListViewController: UICollectionViewController {
   // MARK: - Properties
-  let viewModel: NewsListViewViewModel
+  private let viewModel: NewsListViewViewModel
   private let refreshControl = UIRefreshControl()
   // MARK: - Initializer
   init(with viewModel: NewsListViewViewModel, and layout: UICollectionViewLayout) {
@@ -28,11 +23,12 @@ final class NewsListViewController: UICollectionViewController {
   }
   override func loadView() {
     super.loadView()
-    getNews()
+    fetchNews()
     setupLayout(with: view.bounds.size)
   }
-  private func getNews(isRefreshing: Bool = false) {
-    viewModel.getNews(completion: { [weak self] (hasError) in
+  ///
+  private func fetchNews(isRefreshing: Bool = false) {
+    viewModel.fetch(completion: { [weak self] (hasError) in
       if let error = hasError{
         self?.showAlert(with: "Error", message: error.localizedDescription)
       }
@@ -44,9 +40,10 @@ final class NewsListViewController: UICollectionViewController {
       }
     })
   }
+  /// Refresh Data
   @objc
   private func refreshData() {
-    getNews(isRefreshing: true)
+    fetchNews(isRefreshing: true)
   }
   // MARK: - View Setup & Layout
   /// View Setups.
@@ -88,15 +85,16 @@ extension NewsListViewController {
   }
 }
 
+// MARK: Flow Layout
 extension NewsListViewController {
   private func setupLayout(with containerSize: CGSize) {
     guard let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else {
       return
     }
     flowLayout.minimumInteritemSpacing = 0
-    flowLayout.minimumLineSpacing = 0
-    flowLayout.sectionInset = UIEdgeInsets(top: 8.0, left: 0, bottom: 8.0, right: 0)
-    let width = traitCollection.horizontalSizeClass == .regular ? containerSize.width / 2 : containerSize.width
+    flowLayout.minimumLineSpacing = Padding.small.cgFloat
+    flowLayout.sectionInset = UIEdgeInsets(top: Padding.small.cgFloat, left: 0, bottom: Padding.small.cgFloat, right: 0)
+    let width = traitCollection.horizontalSizeClass == .regular ? (containerSize.width / 2) - Padding.medium.cgFloat : containerSize.width - Padding.medium.cgFloat
     flowLayout.estimatedItemSize = CGSize(width: width, height: 0)
     reloadCollectionData()
   }

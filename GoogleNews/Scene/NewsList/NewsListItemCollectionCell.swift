@@ -15,6 +15,9 @@ final class NewsListItemCollectionCell: UICollectionViewCell, ReusableView {
     width.isActive = true
     return width
   }()
+  private let containerView = UIViewBuilder()
+    .backgroundColor(.white)
+    .build()
   private let imageView = ImageViewBuilder()
     .contentMode(.scaleAspectFill)
     .maskToBounds(true)
@@ -39,6 +42,7 @@ final class NewsListItemCollectionCell: UICollectionViewCell, ReusableView {
     super.init(frame: frame)
     viewSetup()
     viewLayout()
+    updateUI(for: contentView)
   }
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
@@ -46,16 +50,20 @@ final class NewsListItemCollectionCell: UICollectionViewCell, ReusableView {
   // MARK: - View Setup & Layout
   private func viewSetup() {
     contentView.translatesAutoresizingMaskIntoConstraints = false
-    contentView.addSubviews(imageView, titleLabel, descriptionLabel, providerLabel)
+    contentView.addSubviews(containerView, imageView, titleLabel, descriptionLabel, providerLabel)
   }
   private func viewLayout() {
-    imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Padding.mini.cgFloat).isActive = true
-    imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Padding.small.cgFloat).isActive = true
-    imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Padding.small.cgFloat).isActive = true
+    containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0).isActive = true
+    containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 0).isActive = true
+    containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 0).isActive = true
+    containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0).isActive = true
+    imageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 0).isActive = true
+    imageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: 0).isActive = true
+    imageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 0).isActive = true
     imageView.heightAnchor.constraint(equalToConstant: Height.newsCellImageView.cgFloat).isActive = true
     titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: Padding.medium.cgFloat).isActive = true
-    titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Padding.small.cgFloat).isActive = true
-    titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Padding.small.cgFloat).isActive = true
+    titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: Padding.small.cgFloat).isActive = true
+    titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Padding.small.cgFloat).isActive = true
     descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Padding.medium.cgFloat).isActive = true
     descriptionLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor).isActive = true
     descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor).isActive = true
@@ -66,7 +74,7 @@ final class NewsListItemCollectionCell: UICollectionViewCell, ReusableView {
     }
   }
   // MARK: - Helper
-  /// Adaptive
+  /// Adaptive Layout
   override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
     width.constant = bounds.size.width
     return contentView.systemLayoutSizeFitting(CGSize(width: targetSize.width, height: 0))
@@ -79,5 +87,11 @@ final class NewsListItemCollectionCell: UICollectionViewCell, ReusableView {
     if let imageURL = viewModel.imageURL{
       imageView.load(url: imageURL, placeholder: nil)
     }
+  }
+  func updateUI(for contentView: UIView) {
+    contentView.layer.cornerRadius = Padding.small.cgFloat
+    contentView.layer.masksToBounds = true
+    contentView.layer.borderWidth = 0.5
+    contentView.layer.borderColor = UIColor.lightGray.cgColor
   }
 }

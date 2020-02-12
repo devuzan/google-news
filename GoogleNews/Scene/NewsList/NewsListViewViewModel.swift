@@ -35,7 +35,7 @@ final class NewsListViewViewModel {
     viewModels[indexPath.item]
   }
   /// Fetch From API
-  func getNews(completion: @escaping (Error?) -> Void) {
+  func fetch(completion: @escaping (Error?) -> Void) {
     guard let url = Constants.newsURL else { return }
     service.fetch(with: url, decodable: NewsListServiceResponse.self) { (result) in
       switch result{
