@@ -94,7 +94,7 @@ extension NewsListViewController {
     flowLayout.minimumInteritemSpacing = 0
     flowLayout.minimumLineSpacing = Padding.small.cgFloat
     flowLayout.sectionInset = UIEdgeInsets(top: Padding.small.cgFloat, left: 0, bottom: Padding.small.cgFloat, right: 0)
-    let width = traitCollection.horizontalSizeClass == .regular ? (containerSize.width / 2) - Padding.medium.cgFloat : containerSize.width - Padding.medium.cgFloat
+    let width = traitCollection.horizontalSizeClass == .regular ? (containerSize.width / 2) : containerSize.width
     flowLayout.estimatedItemSize = CGSize(width: width, height: 0)
     reloadCollectionData()
   }

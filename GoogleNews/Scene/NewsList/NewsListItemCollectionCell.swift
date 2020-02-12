@@ -20,6 +20,7 @@ final class NewsListItemCollectionCell: UICollectionViewCell, ReusableView {
     .build()
   private let imageView = ImageViewBuilder()
     .contentMode(.scaleAspectFill)
+    .cornerRadius(Padding.small.cgFloat)
     .maskToBounds(true)
     .build()
   private let titleLabel = LabelBuilder()
@@ -42,7 +43,7 @@ final class NewsListItemCollectionCell: UICollectionViewCell, ReusableView {
     super.init(frame: frame)
     viewSetup()
     viewLayout()
-    updateUI(for: contentView)
+    updateUI(for: containerView)
   }
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
@@ -51,11 +52,12 @@ final class NewsListItemCollectionCell: UICollectionViewCell, ReusableView {
   private func viewSetup() {
     contentView.translatesAutoresizingMaskIntoConstraints = false
     contentView.addSubviews(containerView, imageView, titleLabel, descriptionLabel, providerLabel)
+    imageView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
   }
   private func viewLayout() {
-    containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0).isActive = true
-    containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 0).isActive = true
-    containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 0).isActive = true
+    containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Padding.small.cgFloat).isActive = true
+    containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Padding.small.cgFloat).isActive = true
+    containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Padding.small.cgFloat).isActive = true
     containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0).isActive = true
     imageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 0).isActive = true
     imageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: 0).isActive = true
@@ -73,6 +75,12 @@ final class NewsListItemCollectionCell: UICollectionViewCell, ReusableView {
       contentView.bottomAnchor.constraint(equalTo: lastSubview.bottomAnchor, constant: Padding.mini.cgFloat).isActive = true
     }
   }
+  func updateUI(for contentView: UIView) {
+    contentView.layer.cornerRadius = Padding.small.cgFloat
+    contentView.layer.masksToBounds = true
+    contentView.layer.borderWidth = 0.5
+    contentView.layer.borderColor = UIColor.lightGray.cgColor
+  }
   // MARK: - Helper
   /// Adaptive Layout
   override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
@@ -87,11 +95,5 @@ final class NewsListItemCollectionCell: UICollectionViewCell, ReusableView {
     if let imageURL = viewModel.imageURL{
       imageView.load(url: imageURL, placeholder: nil)
     }
-  }
-  func updateUI(for contentView: UIView) {
-    contentView.layer.cornerRadius = Padding.small.cgFloat
-    contentView.layer.masksToBounds = true
-    contentView.layer.borderWidth = 0.5
-    contentView.layer.borderColor = UIColor.lightGray.cgColor
   }
 }

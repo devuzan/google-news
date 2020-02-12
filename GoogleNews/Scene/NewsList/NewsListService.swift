@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum Error: Swift.Error {
+enum WebServiceError: Swift.Error {
   case noData(String)
   case noResponse(String)
   case parse(String)
@@ -16,7 +16,7 @@ enum Error: Swift.Error {
 
 final class NewsListService: NewsListServiceProtocol {
   init (){ }
-  func fetch<T: Decodable>(with serviceURL: URL, decodable: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+  func fetch<T: Decodable>(with serviceURL: URL, decodable: T.Type, completion: @escaping (Result<T, WebServiceError>) -> Void) {
     URLSession.shared.dataTask(with: serviceURL) { (data, response, error) in
       guard var _ = response else {
         completion(.failure(.noResponse("No Response")))
