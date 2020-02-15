@@ -18,10 +18,16 @@ final class NewsListCoordinator: Coordinator {
   // MARK: - Coordinator Protocol
   func start() {
     let service = NewsListService()
-    let viewModel = NewsListViewViewModel(with: service, coordinator: self)
-    let layout = UICollectionViewFlowLayout()
-    let viewController = NewsListViewController(with: viewModel, and: layout)
-    navigationController.setViewControllers([viewController], animated: false)
+    do {
+      let db = try Database(with: Constants.dbName)
+      let table = try NewsTable(with: db, table: Constants.tableName)
+      let viewModel = NewsListViewViewModel(with: service, coordinator: self, table: table)
+      let layout = UICollectionViewFlowLayout()
+      let viewController = NewsListViewController(with: viewModel, and: layout)
+      navigationController.setViewControllers([viewController], animated: false)
+    }catch let error {
+      print(error.localizedDescription)
+    }
   }
   /// Show News Detail for URL
   func showNewsDetail(for url: URL) {

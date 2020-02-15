@@ -26,15 +26,15 @@ final class NewsListViewController: UICollectionViewController {
     fetchNews()
     setupLayout(with: view.bounds.size)
   }
-  ///
+  /// Fetch News
   private func fetchNews(isRefreshing: Bool = false) {
-    viewModel.fetch(completion: { [weak self] (hasError) in
-      if let error = hasError{
+    viewModel.fetch(completion: { [weak self] (error) in
+      if let error = error{
         self?.showAlert(with: "Error", message: error.localizedDescription)
       }
       self?.reloadCollectionData()
       if isRefreshing {
-        DispatchQueue.main.async { [weak self] in
+        DispatchQueue.main.async {
           self?.refreshControl.endRefreshing()
         }
       }

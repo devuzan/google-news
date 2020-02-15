@@ -13,7 +13,6 @@ final class NewsListServiceResponse: Decodable {
   var status: String?
   var totalResults: Int?
   var list: [NewsListServiceItemResponse]?
-  
   enum CodingKeys: String, CodingKey {
     case list = "articles"
   }
