@@ -8,15 +8,15 @@
 
 import UIKit
 
-enum NewsListLayoutOption {
-    case list
-    case grid
-}
-
 final class NewsListViewController: UICollectionViewController {
   // MARK: - Properties
-  let viewModel: NewsListViewViewModel
+  private let viewModel: NewsListViewViewModel
   private let refreshControl = UIRefreshControl()
+  private let indicator = ActivitIndicatorBuilder(style: .medium)
+    .color(.darkGray)
+    .frame(CGRect(x: 0, y: 0, width: 24, height: 24))
+    .hidesWhenStopped(true)
+    .build()
   // MARK: - Initializer
   init(with viewModel: NewsListViewViewModel, and layout: UICollectionViewLayout) {
     self.viewModel = viewModel
@@ -28,25 +28,29 @@ final class NewsListViewController: UICollectionViewController {
   }
   override func loadView() {
     super.loadView()
-    getNews()
+    fetchNews()
     setupLayout(with: view.bounds.size)
   }
-  private func getNews(isRefreshing: Bool = false) {
-    viewModel.getNews(completion: { [weak self] (hasError) in
-      if let error = hasError{
+  /// Fetch News
+  private func fetchNews(isRefreshing: Bool = false) {
+    activityIndictor(isSown: true)
+    viewModel.fetch(completion: { [weak self] (error) in
+      self?.activityIndictor(isSown: false)
+      if let error = error{
         self?.showAlert(with: "Error", message: error.localizedDescription)
       }
       self?.reloadCollectionData()
       if isRefreshing {
-        DispatchQueue.main.async { [weak self] in
+        DispatchQueue.main.async {
           self?.refreshControl.endRefreshing()
         }
       }
     })
   }
+  /// Refresh Data
   @objc
   private func refreshData() {
-    getNews(isRefreshing: true)
+    fetchNews(isRefreshing: true)
   }
   // MARK: - View Setup & Layout
   /// View Setups.
@@ -56,11 +60,17 @@ final class NewsListViewController: UICollectionViewController {
     collectionView.register(NewsListItemCollectionCell.self)
     collectionView.refreshControl = refreshControl
     refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+    navigationItem.rightBarButtonItem = UIBarButtonItem(customView: indicator)
   }
   /// Reload Collection View
   private func reloadCollectionData() {
     DispatchQueue.main.async {
       self.collectionView.reloadData()
+    }
+  }
+  private func activityIndictor(isSown: Bool) {
+    DispatchQueue.main.async {
+      isSown ? self.indicator.startAnimating() : self.indicator.stopAnimating()
     }
   }
 }
@@ -88,15 +98,16 @@ extension NewsListViewController {
   }
 }
 
+// MARK: Flow Layout
 extension NewsListViewController {
   private func setupLayout(with containerSize: CGSize) {
     guard let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else {
       return
     }
     flowLayout.minimumInteritemSpacing = 0
-    flowLayout.minimumLineSpacing = 0
-    flowLayout.sectionInset = UIEdgeInsets(top: 8.0, left: 0, bottom: 8.0, right: 0)
-    let width = traitCollection.horizontalSizeClass == .regular ? containerSize.width / 2 : containerSize.width
+    flowLayout.minimumLineSpacing = Padding.small.cgFloat
+    flowLayout.sectionInset = UIEdgeInsets(top: Padding.small.cgFloat, left: 0, bottom: Padding.small.cgFloat, right: 0)
+    let width = traitCollection.horizontalSizeClass == .regular ? (containerSize.width / 2) : containerSize.width
     flowLayout.estimatedItemSize = CGSize(width: width, height: 0)
     reloadCollectionData()
   }

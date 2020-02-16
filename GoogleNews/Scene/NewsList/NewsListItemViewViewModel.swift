@@ -8,6 +8,7 @@
 
 import Foundation
 final class NewsListItemViewViewModel {
+  // MARK: - Properties.
   var title: String {
     model.title ?? ""
   }
@@ -28,7 +29,8 @@ final class NewsListItemViewViewModel {
     model.sourceName ?? ""
   }
   private let model: NewsListItemPresentationModel
-  init(with response: NewsListServiceItemResponse) {
-    self.model = NewsListItemPresentationModel(with: response)
+  // MARK: - Initializer Method.
+  init(with model: NewsListItemPresentationModel) {
+    self.model = model
   }
 }

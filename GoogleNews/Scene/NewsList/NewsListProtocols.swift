@@ -9,5 +9,9 @@
 import Foundation
 
 protocol NewsListServiceProtocol {
-  func fetch<T: Decodable>(with serviceURL: URL, decodable: T.Type, completion: @escaping (Result<T, Error>) -> Void)
+  func fetch<T: Decodable>(with serviceURL: URL, responseObject: T.Type, completion: @escaping (Result<T, Error>) -> Void)
+}
+
+protocol NewsListViewViewModelProtocol {
+  func fetch(completion: @escaping (Error?) -> Void)
 }
