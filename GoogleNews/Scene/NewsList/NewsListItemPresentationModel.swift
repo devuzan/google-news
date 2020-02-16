@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class NewsListItemPresentationModel {
+class NewsListItemPresentationModel {
   // MARK: - Properties.
   var title: String?
   var urlToImage: String?

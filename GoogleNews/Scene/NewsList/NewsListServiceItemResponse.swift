@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class NewsListServiceItemResponse: Decodable {
+class NewsListServiceItemResponse: Decodable {
   // MARK: - Properties.
   var title: String?
   var description: String?

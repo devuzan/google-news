@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class NewsListServiceResponse: Decodable {
+class NewsListServiceResponse: Decodable {
   // MARK: - Properties.
   var status: String?
   var totalResults: Int?

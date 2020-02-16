@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class NewsListItemCollectionCell: UICollectionViewCell, ReusableView {
+class NewsListItemCollectionCell: UICollectionViewCell, ReusableView {
   // MARK: - Properties.
   lazy var width: NSLayoutConstraint = {
     let width = contentView.widthAnchor.constraint(equalToConstant: bounds.size.width)

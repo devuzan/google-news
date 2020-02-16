@@ -12,6 +12,11 @@ final class NewsListViewController: UICollectionViewController {
   // MARK: - Properties
   private let viewModel: NewsListViewViewModel
   private let refreshControl = UIRefreshControl()
+  private let indicator = ActivitIndicatorBuilder(style: .medium)
+    .color(.darkGray)
+    .frame(CGRect(x: 0, y: 0, width: 24, height: 24))
+    .hidesWhenStopped(true)
+    .build()
   // MARK: - Initializer
   init(with viewModel: NewsListViewViewModel, and layout: UICollectionViewLayout) {
     self.viewModel = viewModel
@@ -28,7 +33,9 @@ final class NewsListViewController: UICollectionViewController {
   }
   /// Fetch News
   private func fetchNews(isRefreshing: Bool = false) {
+    activityIndictor(isSown: true)
     viewModel.fetch(completion: { [weak self] (error) in
+      self?.activityIndictor(isSown: false)
       if let error = error{
         self?.showAlert(with: "Error", message: error.localizedDescription)
       }
@@ -53,11 +60,17 @@ final class NewsListViewController: UICollectionViewController {
     collectionView.register(NewsListItemCollectionCell.self)
     collectionView.refreshControl = refreshControl
     refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+    navigationItem.rightBarButtonItem = UIBarButtonItem(customView: indicator)
   }
   /// Reload Collection View
   private func reloadCollectionData() {
     DispatchQueue.main.async {
       self.collectionView.reloadData()
+    }
+  }
+  private func activityIndictor(isSown: Bool) {
+    DispatchQueue.main.async {
+      isSown ? self.indicator.startAnimating() : self.indicator.stopAnimating()
     }
   }
 }
